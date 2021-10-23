@@ -15,8 +15,8 @@ connection.on("setTopic", function (message) {
     document.getElementById("topic").textContent = message;
 });
 
-connection.on("newRound", function () { 
-    var elems = document.querySelectorAll(".score");
+connection.on("newRound", function () {
+    let elems = document.querySelectorAll(".score");
 
     [].forEach.call(elems, function (el) {
         el.textContent = "?";
@@ -29,14 +29,14 @@ connection.on("newRound", function () {
 connection.on("Joined", function (roomUsers) {
 
     for (let i = 0; i < roomUsers.length; i++) {
-        var elementExists = document.getElementById(roomUsers[i].id)
+        const elementExists = document.getElementById(roomUsers[i].id);
         if (elementExists === null || elementExists === undefined) {
             let placing = document.createElement("div")
-            placing.setAttribute("class", "col-6 col-sm-2");
+            placing.setAttribute("class", "col-6 col-sm-2 scrumcard");
+            placing.setAttribute("id", roomUsers[i].id);
             let div = document.createElement("div")
             div.setAttribute("class", "scrumplayer")
-            let score = document.createElement("div")
-            score.setAttribute("id", roomUsers[i].id)
+            let score = document.createElement("div") 
             score.setAttribute("class", "score")
             score.textContent = "?";
             let playa = document.createElement("div")
@@ -50,18 +50,29 @@ connection.on("Joined", function (roomUsers) {
     }
 });
 
-connection.on("showVotes", function (votes) {
+connection.on("showVotes", function (votes, mode,median) {
 
     for (let i = 0; i < votes.length; i++) {
-        document.getElementById(votes[i].userId).textContent = votes[i].score;
-    }
+        let elem = document.getElementById(votes[i].userId);
+        let score = elem.querySelector('.score');
+        score.textContent = votes[i].score;
+    } 
     document.getElementById("messagesList").innerHTML = "";
     document.querySelector('input[name="vote"]:checked').checked = false
 
+    document.getElementById("mode").innerHTML = "Mode: " + mode;
+    document.getElementById("median").innerHTML = "Median: " + median;
+    document.getElementById("statistics").classList.remove("d-none");
+});
+
+connection.on("disconnected", function (userid) {
+    document.getElementById(userid).remove(); 
 });
 
 connection.on("voted", function (user) {
-    document.getElementById(user).parentElement.classList.add("voted");
+    let elem = document.getElementById(user);
+    let voted = elem.querySelector('.scrumplayer');
+    voted.classList.add("voted")
 });
 connection.on("voteMessage", function (user, message) {
     const msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -99,6 +110,8 @@ document.getElementById("newRound").addEventListener("click", function (event) {
         return console.error(err.toString());
     });
     event.preventDefault();
+
+    document.getElementById("statistics").classList.add("d-none");
     document.querySelector('input[name="vote"]:checked').checked = false;
 });
 const checkboxElems = document.querySelectorAll("input[name = 'vote']");
@@ -110,23 +123,22 @@ for (let i = 0; i < checkboxElems.length; i++) {
             return console.error(err.toString());
         });
     });
-}
-
+} 
  
 document.getElementById("join").addEventListener("click", function (event) {
-    var userName = document.getElementById("first_name").value;
+    const userName = document.getElementById("first_name").value;
     if (userName.length < 3 || userName.length > 10) {
         alert("user name needs to be between 3 and 10 characters long");
         return;
     }
-    var room = document.getElementById("chatroom1").value;
+    const room = document.getElementById("chatroom1").value;
     connection.invoke("RoomExists", room).catch(function (err) {
         return console.error(err.toString());
     });  
 });
 connection.on("RoomExists", function (room) {
     if (room.length > 0) {
-        var userName = document.getElementById("first_name").value;
+        const userName = document.getElementById("first_name").value;
         connection.invoke("Join", userName, room).catch(function (err) {
             return console.error(err.toString());
         });
@@ -142,7 +154,7 @@ connection.on("enter", function (room) {
     document.getElementById("currentroom").textContent = room;
 });
 connection.on("admin", function () {
-    var elems = document.querySelectorAll(".admin");
+    const elems = document.querySelectorAll(".admin");
 
     [].forEach.call(elems, function (el) {
         el.classList.remove("d-none");
@@ -156,7 +168,7 @@ connection.on("admin", function () {
 
 document.getElementById("create").addEventListener("click", function (event) {
     event.preventDefault();
-    var userName = document.getElementById("first_name1").value;
+    const userName = document.getElementById("first_name1").value;
 
     if (userName.length < 3 || userName.length > 10) {
         alert("user name needs to be between 3 and 10 characters long");

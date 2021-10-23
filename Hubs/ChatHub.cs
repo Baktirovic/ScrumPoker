@@ -41,13 +41,28 @@ namespace ScrumPoker.Hubs
             var user = GetUser();
             if (room != default && room.Admin == user.Id)
             {
-                await Clients.Group(room.Name).SendAsync("showVotes", room.Votes);   
-            }else
+                int mode =
+                     room.Votes
+                     .GroupBy(x => x.Score)
+                     .OrderByDescending(x => x.Count()).ThenBy(x => x.Key)
+                     .Select(x => (int?)x.Key)
+                     .FirstOrDefault()?? 0;
+                int? median = Convert.ToInt32(Median(room.Votes.Select(q => q.Score).ToArray()));
+                await Clients.Group(room.Name).SendAsync("showVotes", room.Votes, median, mode);   
+            }
+            else
             {
-                await Clients.Group(room.Name).SendAsync("receive", "User can not show votes", user.Name);
+                if (room != null)
+                    await Clients.Group(room.Name).SendAsync("receive", "User can not show votes", user.Name);
             } 
         }
 
+        private static decimal Median(int[] votes)
+        {
+            var sortedList = votes.OrderBy(x => x).ToList();
+            var mid = (sortedList.Count - 1) / 2.0;
+            return (sortedList[(int)(mid)] + sortedList[(int)(mid + 0.5)]) / 2;
+        }
         public async Task NewRound()
         {            
             var room = GetUsersCurrentRoom();
@@ -135,7 +150,7 @@ namespace ScrumPoker.Hubs
                 user = new User { Id = Context.ConnectionId, Name = userName, TimeStamp = DateTime.Now};
                 Users.Add(user);
             } 
-            if(!CheckIfRoomExists(roomName) && user != default)
+            if(!CheckIfRoomExists(roomName))
             {
                 Rooms.Add(new Room
                 {
@@ -162,6 +177,35 @@ namespace ScrumPoker.Hubs
         {
             return Rooms.Any(q=> q.Name.Contains(roomName));
         }
-  
+
+         
+        public override async Task OnDisconnectedAsync(Exception? exception)
+        {
+
+            var room = GetUsersCurrentRoom();
+            var user = GetUser();
+            if (room != default)
+            {
+                room.Users.Remove(user);
+                if (room.Users.Count > 0)
+                {
+                    if (room.Admin == user.Id)
+                    {
+                        room.Admin = room.Users.FirstOrDefault().Id;
+                    }
+                    room.Votes.RemoveAll(q => q.UserId == user.Id);
+                }
+                else
+                {
+                    Rooms.Remove(room);
+                }
+
+                await Clients.Group(room.Name).SendAsync("disconnected", user.Id);
+            }
+       
+            Users.Remove(user); 
+            await base.OnDisconnectedAsync(exception);
+        }
+
     }
 }

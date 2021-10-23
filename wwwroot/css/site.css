@@ -136,3 +136,8 @@ body {
 .voted {
     border: solid 2px #00D100;
 }
+
+#mode, #median
+{
+    font-size:2em;
+}
