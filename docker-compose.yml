@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  scrumpoker:
+    image: ${DOCKER_REGISTRY-}scrumpoker
+    build:
+      context: .
+      dockerfile: ./Dockerfile

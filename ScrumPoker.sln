@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.810.11
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScrumPoker", "ScrumPoker.csproj", "{1C2C8B33-9207-408B-B104-4519899DFC2B}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{526ED1C7-F65A-4813-86ED-AA7E18087840}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1C2C8B33-9207-408B-B104-4519899DFC2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C2C8B33-9207-408B-B104-4519899DFC2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C2C8B33-9207-408B-B104-4519899DFC2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C2C8B33-9207-408B-B104-4519899DFC2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{526ED1C7-F65A-4813-86ED-AA7E18087840}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{526ED1C7-F65A-4813-86ED-AA7E18087840}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{526ED1C7-F65A-4813-86ED-AA7E18087840}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{526ED1C7-F65A-4813-86ED-AA7E18087840}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8C88DC3C-7D1C-413C-838A-B0BE6DAC0F95}
+	EndGlobalSection
+EndGlobal

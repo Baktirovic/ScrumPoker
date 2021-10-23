@@ -1,0 +1,132 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="container" id="index">
+    <div id="form">
+        <div class="container">
+            <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-md-8 col-md-offset-2">
+                <div id="userform">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li class="nav-item"><a href="#signup" role="tab" class="nav-link active" data-toggle="tab">Join chatroom</a></li>
+                        <li class="nav-item"><a href="#login" class="nav-link" role="tab" data-toggle="tab">Create Chatroom</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane active in" id="signup"> 
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-6">
+                                        <div class="form-group">
+                                            <label>User Name<span class="req">*</span> </label>
+                                            <input type="text" class="form-control" minlength="8" maxlength="10" id="first_name" name="username" required data-validation-required-message="Please enter your name." autocomplete="off">
+                                            <p class="help-block text-danger"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6">
+                                        <div class="form-group">
+                                            <label> Chatroom<span class="req">*</span> </label>
+                                            <input type="text" class="form-control" id="chatroom1" name="chatroom" required data-validation-required-message="Please enter your name." autocomplete="off">
+                                            <p class="help-block text-danger"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mrgn-30-top">
+                                    <button type="submit" class="btn btn-secondary btn-large" id="join">
+                                        Join
+                                    </button>
+                                </div> 
+                        </div>
+                        <div class="tab-pane fade in" id="login"> 
+                                <div class="form-group">
+
+                                    <label for="first_name1">User Name<span class="req">*</span> </label>
+                                    <input type="text" class="form-control" id="first_name1" minlength="8" maxlength="10" required data-validation-required-message="Please enter your email address." autocomplete="off">
+                                    <p class="help-block text-danger"></p>
+                                </div>
+                                <div class="mrgn-30-top">
+                                    <button type="submit" class="btn btn-secondary btn-large" id="create">
+                                        Create room
+                                    </button>
+                                </div> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.container -->
+    </div>
+</div>
+
+<div class="container-fluid d-none" id="chat">
+    <div class="ten"><h1 id="topic"></h1></div>
+    <div class="sixty">
+        <div class="row">
+            <div class="col-2">
+                <div style="height: 30vh; display: block;" class="admin d-none">
+
+                    <div id="inputForm">
+                        <input type="text" id="topicName" class="form-control" value="" />
+                        <br />
+                        <input type="button" id="topicNameBtn" class="btn btn-secondary btn-large" value="Set room topic" />
+                    </div>
+                </div>
+                <div style="height: 30vh; display: block;">
+                    <p>Invite others to room :</p>
+                    <h4 id="currentroom"></h4>
+                </div>
+                <div class="ten admin d-none">
+                    <input type="button" id="showVotes" class="btn btn-secondary btn-large" value="Show votes" />
+                </div>
+                <div class="ten  admin d-none">
+                    <input type="button" id="newRound" class="btn btn-secondary btn-large" value="New round" />
+                </div>
+            </div>
+            <div class="col-8" style="height: 30vh; display: block;">
+                <div Id="Users" class="row">
+                </div>
+            </div>
+            <div class="col-2" style="height: 30vh; display: block;">
+                <div id="messagesList"></div>
+            </div>
+        </div>
+    </div>
+    <div class="thirty">
+        <div class="d-flex align-items-end flex-column">
+            <div class="custom-choose mb-3">
+                <input type="radio" id="opt-1" value="1" name="vote">
+                <label for="opt-1">
+                    1
+                </label>
+                <input type="radio" id="opt-2" value="2" name="vote">
+                <label for="opt-2">
+                    2
+                </label>
+                <input type="radio" id="opt-3" value="3" name="vote">
+                <label for="opt-3">
+                    3
+                </label>
+                <input type="radio" id="opt-5" value="5" name="vote">
+                <label for="opt-5">
+                    5
+                </label>
+                <input type="radio" id="opt-8" value="8" name="vote">
+                <label for="opt-8">
+                    8
+                </label>
+                <input type="radio" id="opt-13" value="13" name="vote">
+                <label for="opt-13">
+                    13
+                </label>
+                <input type="radio" id="opt-21" value="21" name="vote">
+                <label for="opt-21">
+                    21
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div ><ul id="debug"></ul></div>
+@section Scripts {
+    <script src="~/js/signalr/dist/browser/signalr.js"></script>
+    <script src="~/js/chat.js"></script>
+}
