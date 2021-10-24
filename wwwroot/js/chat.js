@@ -93,20 +93,20 @@ connection.start().then(function () {
 
 document.getElementById("topicNameBtn").addEventListener("click", function (event) {
     const message = document.getElementById("topicName").value; 
-    connection.invoke("Settopic", message).catch(function (err) {
+    connection.invoke("SetTopicAsync", message).catch(function (err) {
         return console.error(err.toString());
     });
     event.preventDefault();
 });
 
 document.getElementById("showVotes").addEventListener("click", function (event) { 
-    connection.invoke("showVotes").catch(function (err) {
+    connection.invoke("ShowVotesAsync").catch(function (err) {
         return console.error(err.toString());
     });
     event.preventDefault();
 });
 document.getElementById("newRound").addEventListener("click", function (event) { 
-    connection.invoke("newRound").catch(function (err) {
+    connection.invoke("NewRoundAsync").catch(function (err) {
         return console.error(err.toString());
     });
     event.preventDefault();
@@ -119,7 +119,7 @@ const checkboxElems = document.querySelectorAll("input[name = 'vote']");
 for (let i = 0; i < checkboxElems.length; i++) {
     checkboxElems[i].addEventListener("click", function (event) {  
         const vote = document.querySelector('input[name="vote"]:checked').value;
-        connection.invoke("Vote", vote).catch(function (err) {
+        connection.invoke("VoteAsync", vote).catch(function (err) {
             return console.error(err.toString());
         });
     });
@@ -132,19 +132,25 @@ document.getElementById("join").addEventListener("click", function (event) {
         return;
     }
     const room = document.getElementById("chatroom1").value;
-    connection.invoke("RoomExists", room).catch(function (err) {
+    connection.invoke("ValidateUserNameAndRoomNameAsync", room, userName).catch(function (err) {
         return console.error(err.toString());
     });  
 });
-connection.on("RoomExists", function (room) {
-    if (room.length > 0) {
-        const userName = document.getElementById("first_name").value;
-        connection.invoke("Join", userName, room).catch(function (err) {
+connection.on("ValidateUserNameAndRoomName", function (roomName, userName) {
+    if (roomName.length > 0 && userName.length > 0) { 
+        connection.invoke("JoinChatAsync", userName, roomName).catch(function (err) {
             return console.error(err.toString());
         });
     }
     else {
-        alert("Room does not exist")
+        let message = "";
+        if (roomName.length === 0) {
+            message = "Room does not exist\n"
+        }
+        if (userName.length === 0) {
+            message +="Username already exists\n"
+        }
+        alert(message)
     }
 });
 
@@ -174,7 +180,7 @@ document.getElementById("create").addEventListener("click", function (event) {
         alert("user name needs to be between 3 and 10 characters long");
         return;
     }
-    connection.invoke("Join", userName, "").catch(function (err) {
+    connection.invoke("JoinChatAsync", userName, "").catch(function (err) {
         return console.error(err.toString());
     }); 
 });

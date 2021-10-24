@@ -12,19 +12,8 @@ namespace ScrumPoker.Hubs
     {
         private static readonly IList<Room> Rooms = new List<Room>();
         private static readonly IList<User> Users = new List<User>();
-
-
-        private User GetUser()
-        {
-            return Users.FirstOrDefault(q => q.Id == Context.ConnectionId);
-        }
-
-        private Room GetUsersCurrentRoom()
-        {
-            return Rooms.FirstOrDefault(q => q.Users.Any(us => us.Id == Context.ConnectionId));
-        }
-
-        public async Task SetTopic(string message)
+         
+        public async Task SetTopicAsync(string message)
         {
             var room = GetUsersCurrentRoom();
             var user = GetUser();
@@ -34,7 +23,7 @@ namespace ScrumPoker.Hubs
             } 
         }
 
-        public async Task ShowVotes()
+        public async Task ShowVotesAsync()
         {
 
             var room = GetUsersCurrentRoom();
@@ -63,7 +52,7 @@ namespace ScrumPoker.Hubs
             var mid = (sortedList.Count - 1) / 2.0;
             return (sortedList[(int)(mid)] + sortedList[(int)(mid + 0.5)]) / 2;
         }
-        public async Task NewRound()
+        public async Task NewRoundAsync()
         {            
             var room = GetUsersCurrentRoom();
             var user = GetUser();
@@ -74,7 +63,7 @@ namespace ScrumPoker.Hubs
             } 
         }
 
-        public async Task Vote(string vote)
+        public async Task VoteAsync(string vote)
         {
 
             var room = GetUsersCurrentRoom();
@@ -105,7 +94,7 @@ namespace ScrumPoker.Hubs
           
         }
  
-        private async Task JoinRoom(string roomName)
+        private async Task JoinRoomAsync(string roomName)
         {
             var room = Rooms.FirstOrDefault(q => q.Name == roomName);
             var user = GetUser();
@@ -128,7 +117,7 @@ namespace ScrumPoker.Hubs
                
             } 
         }
-        public async Task Join(string userName, string roomName)
+        public async Task JoinChatAsync(string userName, string roomName)
         {
             if(userName.Length > 10 || userName.Length< 3)
             {
@@ -161,24 +150,22 @@ namespace ScrumPoker.Hubs
                     TimeStamp = DateTime.Now
                 });
             }
-            await JoinRoom(roomName); 
+            await JoinRoomAsync(roomName); 
 
         }
-        public async Task RoomExists(string roomName)
+        public async Task ValidateUserNameAndRoomNameAsync(string roomName, string userName)
         {
-            await Clients.Client(Context.ConnectionId).SendAsync("RoomExists", CheckIfRoomExists(roomName) ? roomName : "");
+
+            await Clients.Client(Context.ConnectionId).SendAsync("ValidateUserNameAndRoomName",
+                            CheckIfRoomExists(roomName) ? roomName : "",
+                            !CheckIfUserNameExists(userName)? userName : "");
         }
+
         public Task LeaveRoom(string roomName)
         {
             return Groups.RemoveFromGroupAsync(Context.ConnectionId, roomName);
         }
 
-        private static bool CheckIfRoomExists(string roomName)
-        {
-            return Rooms.Any(q=> q.Name.Contains(roomName));
-        }
-
-         
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
 
@@ -202,10 +189,31 @@ namespace ScrumPoker.Hubs
 
                 await Clients.Group(room.Name).SendAsync("disconnected", user.Id);
             }
-       
-            Users.Remove(user); 
+
+            Users.Remove(user);
             await base.OnDisconnectedAsync(exception);
         }
+
+        private static bool CheckIfRoomExists(string roomName)
+        {
+            return Rooms.Any(q=> q.Name.Contains(roomName));
+        }
+
+        private static bool CheckIfUserNameExists(string userName)
+        {
+            return Users.Any(q => q.Name.Contains(userName));
+        }
+
+        private User GetUser()
+        {
+            return Users.FirstOrDefault(q => q.Id == Context.ConnectionId);
+        }
+
+        private Room GetUsersCurrentRoom()
+        {
+            return Rooms.FirstOrDefault(q => q.Users.Any(us => us.Id == Context.ConnectionId));
+        }
+
 
     }
 }

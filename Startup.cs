@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
-using Microsoft.AspNetCore.SignalR;
 using ScrumPoker.Hubs;
 
 namespace ScrumPoker
@@ -25,9 +19,7 @@ namespace ScrumPoker
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews(); 
-
-            services.AddSession();
+            services.AddControllersWithViews();  
             services.AddRazorPages().AddMvcOptions(options =>
             {
                 options.MaxModelValidationErrors = 50;
@@ -50,8 +42,7 @@ namespace ScrumPoker
             }
             app.UseStaticFiles();
 
-            app.UseRouting();
-            app.UseSession();
+            app.UseRouting(); 
             app.UseAuthorization();
    
             app.UseEndpoints(endpoints =>
